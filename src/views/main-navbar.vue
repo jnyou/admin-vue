@@ -2,8 +2,8 @@
   <nav class="site-navbar" :class="'site-navbar--' + navbarLayoutType">
     <div class="site-navbar__header">
       <h1 class="site-navbar__brand" @click="$router.push({ name: 'home' })">
-        <a class="site-navbar__brand-lg" href="javascript:;">优购商城平台</a>
-        <a class="site-navbar__brand-mini" href="javascript:;">优购商城</a>
+        <a class="site-navbar__brand-lg mall-title" href="javascript:;">Smallsword Mall</a>
+        <a class="site-navbar__brand-mini" href="javascript:;">Smallsword Mall</a>
       </h1>
     </div>
     <div class="site-navbar__body clearfix">
@@ -31,8 +31,8 @@
         </el-menu-item>
         <el-submenu index="3">
           <template slot="title">Git源码</template>
-          <el-menu-item index="2-1"><a href="https://github.com/renrenio/renren-fast-vue" target="_blank">前端</a></el-menu-item>
-          <el-menu-item index="2-2"><a href="https://gitee.com/renrenio/renren-fast" target="_blank">后台</a></el-menu-item>
+          <el-menu-item index="2-1"><a href="https://github.com/jnyou/admin-vue.git" target="_blank">前端</a></el-menu-item>
+          <el-menu-item index="2-2"><a href="https://github.com/jnyou/iCloudDo.git" target="_blank">后台</a></el-menu-item>
           <el-menu-item index="2-3"><a href="https://gitee.com/renrenio/renren-generator" target="_blank">代码生成器</a></el-menu-item>
         </el-submenu>
         <el-menu-item class="site-navbar__avatar" index="3">
@@ -111,3 +111,8 @@
     }
   }
 </script>
+<style lang="" scoped>
+.mall-title{
+  text-transform :initial;
+}
+</style>
