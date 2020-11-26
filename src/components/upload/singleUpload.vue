@@ -1,7 +1,7 @@
 <template> 
   <div>
     <el-upload
-      action="http://gulimall-hello.oss-cn-beijing.aliyuncs.com"
+      action="http://smallsword-mall.oss-cn-beijing.aliyuncs.com"
       :data="dataObj"
       list-type="picture"
       :multiple="false" :show-file-list="showFileList"
@@ -87,7 +87,7 @@
             _self.dataObj.key = response.data.dir +getUUID()+'_${filename}';
             _self.dataObj.dir = response.data.dir;
             _self.dataObj.host = response.data.host;
-            console.log("响应的数据222。。。",_self.dataObj);
+            console.log("响应的数据To",_self.dataObj);
             resolve(true)
           }).catch(err => {
             reject(false)
