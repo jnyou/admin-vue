@@ -121,13 +121,13 @@ export default {
             trigger: "blur"
           }
         ],
-        valueType: [
-          {
-            required: true,
-            message: "值类型不能为空",
-            trigger: "blur"
-          }
-        ],
+        // valueType: [
+        //   {
+        //     required: true,
+        //     message: "值类型不能为空",
+        //     trigger: "blur"
+        //   }
+        // ],
         icon: [
           { required: true, message: "属性图标不能为空", trigger: "blur" }
         ],
