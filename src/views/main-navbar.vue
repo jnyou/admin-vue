@@ -26,7 +26,7 @@
         </el-menu-item>
         <el-menu-item index="2">
           <el-badge value="hot">
-            <a href="https://www.renren.io/" target="_blank">官方社区</a>
+            <a href="https://jnyou.gitee.io/" target="_blank">博客社区</a>
           </el-badge>
         </el-menu-item>
         <el-submenu index="3">
