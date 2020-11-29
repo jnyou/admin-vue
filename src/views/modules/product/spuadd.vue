@@ -783,13 +783,13 @@ export default {
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {
+    this.getMemberLevels();
     this.catPathSub = PubSub.subscribe("catPath", (msg, val) => {
       this.spu.catalogId = val[val.length - 1];
     });
     this.brandIdSub = PubSub.subscribe("brandId", (msg, val) => {
       this.spu.brandId = val;
     });
-    this.getMemberLevels();
   },
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
