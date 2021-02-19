@@ -6,7 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <!-- utils里面index.js判断权限，将登录后的所有权限都保存在了sessionStorage中 v-if="isAuth('pms:spuinfo:save')"  v-if="isAuth('pms:spuinfo:delete')" -->
+        <el-button v-if="isAuth('order:ordersetting:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('order:ordersetting:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -25,49 +26,43 @@
         prop="id"
         header-align="center"
         align="center"
-        label="商品id">
+        label="id">
       </el-table-column>
       <el-table-column
-        prop="spuName"
+        prop="flashOrderOvertime"
         header-align="center"
         align="center"
-        label="商品名称">
+        label="秒杀订单超时关闭时间(分)">
       </el-table-column>
       <el-table-column
-        prop="spuDescription"
+        prop="normalOrderOvertime"
         header-align="center"
         align="center"
-        label="商品描述">
+        label="正常订单超时时间(分)">
       </el-table-column>
       <el-table-column
-        prop="catalogId"
+        prop="confirmOvertime"
         header-align="center"
         align="center"
-        label="所属分类">
+        label="发货后自动确认收货时间（天）">
       </el-table-column>
       <el-table-column
-        prop="brandId"
+        prop="finishOvertime"
         header-align="center"
         align="center"
-        label="品牌">
+        label="自动完成交易时间，不能申请退货（天）">
       </el-table-column>
       <el-table-column
-        prop="publishStatus"
+        prop="commentOvertime"
         header-align="center"
         align="center"
-        label="上架状态">
+        label="订单完成后自动好评时间（天）">
       </el-table-column>
       <el-table-column
-        prop="createTime"
+        prop="memberLevel"
         header-align="center"
         align="center"
-        label="创建时间">
-      </el-table-column>
-      <el-table-column
-        prop="uodateTime"
-        header-align="center"
-        align="center"
-        label="更新时间">
+        label="会员等级【0-不限会员等级，全部通用；其他-对应的其他会员等级】">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -76,6 +71,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -88,10 +85,13 @@
       :total="totalPage"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
+    <!-- 弹窗, 新增 / 修改 -->
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
 </template>
 
 <script>
+  import AddOrUpdate from './ordersetting-add-or-update'
   export default {
     data () {
       return {
@@ -104,10 +104,11 @@
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],
+        addOrUpdateVisible: false
       }
     },
     components: {
-      
+      AddOrUpdate
     },
     activated () {
       this.getDataList()
@@ -117,7 +118,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornApiUrl('/pms/spuinfo/list'),
+          url: this.$http.adornUrl('/order/ordersetting/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -125,10 +126,9 @@
             'key': this.dataForm.key
           })
         }).then(({data}) => {
-           console.log(data);
           if (data && data.code === 0) {
-            this.dataList = data.data.list
-            this.totalPage = data.data.totalCount
+            this.dataList = data.page.list
+            this.totalPage = data.page.totalCount
           } else {
             this.dataList = []
             this.totalPage = 0
@@ -151,6 +151,43 @@
       selectionChangeHandle (val) {
         this.dataListSelections = val
       },
+      // 新增 / 修改
+      addOrUpdateHandle (id) {
+        this.addOrUpdateVisible = true
+        this.$nextTick(() => {
+          this.$refs.addOrUpdate.init(id)
+        })
+      },
+      // 删除
+      deleteHandle (id) {
+        var ids = id ? [id] : this.dataListSelections.map(item => {
+          return item.id
+        })
+        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/order/ordersetting/delete'),
+            method: 'post',
+            data: this.$http.adornData(ids, false)
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.getDataList()
+                }
+              })
+            } else {
+              this.$message.error(data.msg)
+            }
+          })
+        })
+      }
     }
   }
 </script>
